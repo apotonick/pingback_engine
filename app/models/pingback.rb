@@ -17,12 +17,13 @@ class Pingback
     @target_uri = target_uri
   end
   
-  ### FIXME: remove! 
+  ### FIXME: 2BRM.
   def ping; process_incoming_ping(source_uri, target_uri); end
   
   def receive_ping
     process_incoming_ping(source_uri, target_uri)
   end
+  
   # For allowed return values, check http://hixie.ch/specs/pingback/pingback#return
   def process_incoming_ping(source_uri, target_uri)
   
@@ -35,16 +36,13 @@ class Pingback
       return 17 unless @linking_node = find_linking_node_to(target_uri)
       @excerpt = excerpt_content_to(@linking_node, target_uri)
       
-      return 33 unless save_pingback
+      return 33 unless save_pingback # invoke the outside callback.
       return "Ping from #{source_uri} to #{target_uri} registered. Thanks for linking to us."
+      ### TODO: let save_callback propagate other error codes.
+      
     rescue SocketError, OpenURI::HTTPError => e
       return 16
-    rescue
-      puts $!.inspect
     end
-    
-    
-    0
   end
   
   def retrieve_source_content(source_uri)
@@ -102,10 +100,17 @@ class Pingback
   cattr_accessor :save_callback
   def self.save_callback &block
     @@save_callback = block
-    puts "saved callback"
   end
   
   def save_pingback
-    @@save_callback.call(self) if @@save_callback
+    return unless @@save_callback
+
+     @@save_callback.call(self) || true # return true.
   end
+    
+  #def reply_target_uri_does_not_accept_posts; 33; end
+  def reply_target_uri_does_not_accept_posts; false; end
+  def reply_target_uri_does_not_exist; 32; end
+  def reply_ok; true; end
+  
 end

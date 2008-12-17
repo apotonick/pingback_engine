@@ -4,7 +4,7 @@ require "xmlrpc/client"
  
 server = XMLRPC::Client.new2("http://localhost:3000/pingback/xml")
 
-ok, param = server.call2("pingback.ping", "http://localhost/index.html", "http://localhost:3000/stage/chaas-schulz")
+ok, param = server.call2("pingback.ping", ARGV[0], ARGV[1])
 
 if ok then
   puts "Response: #{param}"
