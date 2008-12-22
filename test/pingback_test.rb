@@ -74,4 +74,19 @@ class PingbackTest < ActiveSupport::TestCase
     
     assert_equal "a target uri", pb.save_pingback
   end
+  
+  # test helpers ----------------------------------------------------------------
+  def test_set_xpingback_header
+    assert false
+  end
+  
+  def test_pingback_link_tag
+    assert false
+  end
+  
+  # test controller -------------------------------------------------------------
+  def test_controller_return_codes
+    # provoke errors and compare return codes/exceptions.
+    assert false
+  end
 end
